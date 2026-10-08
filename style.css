@@ -41,7 +41,6 @@ html {
 
 body {
     margin: 0;
-
     min-height: 100vh;
 
     color: var(--text);
@@ -493,6 +492,71 @@ h1 span {
 }
 
 
+.btn-tiktok {
+
+    background:
+        linear-gradient(
+            135deg,
+            #111827,
+            #111827
+        );
+
+    border-color:
+        rgba(255, 255, 255, 0.20);
+
+    box-shadow:
+        0 10px 30px
+        rgba(0, 0, 0, 0.25);
+}
+
+
+.btn-tiktok:hover {
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff0050,
+            #00f2ea
+        );
+
+    border-color:
+        rgba(255, 255, 255, 0.5);
+
+    box-shadow:
+        0 12px 35px
+        rgba(255, 0, 80, 0.22);
+}
+
+
+.btn-tiktok svg {
+
+    width: 19px;
+    height: 19px;
+}
+
+
+.nav-tiktok {
+
+    color: #ff8baa !important;
+
+    font-weight: 800;
+
+    transition:
+        color 0.2s ease,
+        text-shadow 0.2s ease;
+}
+
+
+.nav-tiktok:hover {
+
+    color: #ffffff !important;
+
+    text-shadow:
+        0 0 15px
+        rgba(255, 0, 80, 0.7);
+}
+
+
 /* =========================================
    SECTIONS
 ========================================= */
@@ -570,112 +634,6 @@ section {
     box-shadow: var(--shadow);
 
     backdrop-filter: blur(14px);
-}
-
-
-/* =========================================
-   DOWNLOAD CARDS
-========================================= */
-
-.downloads-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(
-            3,
-            1fr
-        );
-
-    gap: 18px;
-}
-
-
-.download-card {
-
-    min-height: 215px;
-
-    padding: 26px;
-
-    transition:
-        transform 0.25s ease,
-        border-color 0.25s ease;
-}
-
-
-.download-card:hover {
-
-    transform:
-        translateY(-5px);
-
-    border-color:
-        rgba(127, 210, 255, 0.45);
-}
-
-
-.download-icon {
-
-    width: 46px;
-    height: 46px;
-
-    display: grid;
-
-    place-items: center;
-
-    margin-bottom: 18px;
-
-    border-radius: 14px;
-
-    background:
-        rgba(104, 191, 255, 0.10);
-
-    border:
-        1px solid
-        rgba(104, 191, 255, 0.20);
-
-    color: var(--cyan);
-}
-
-
-.download-card h3 {
-
-    margin:
-        0
-        0
-        8px;
-
-    font-size: 20px;
-}
-
-
-.download-card p {
-
-    margin:
-        0
-        0
-        20px;
-
-    color: var(--muted);
-
-    line-height: 1.55;
-
-    font-size: 14px;
-}
-
-
-.download-card a {
-
-    color: #bde8ff;
-
-    font-size: 13px;
-
-    font-weight: 800;
-}
-
-
-.download-card a:hover {
-
-    color: white;
 }
 
 
@@ -786,6 +744,8 @@ section {
 .other-card {
 
     padding: 24px;
+
+    min-width: 0;
 }
 
 
@@ -855,16 +815,198 @@ section {
 
 
 /* =========================================
+   CHARACTER PHOTO
+========================================= */
+
+.command-photo {
+
+    width: 100%;
+
+    margin:
+        12px
+        0;
+}
+
+
+.photo-button {
+
+    position: relative;
+
+    display: block;
+
+    width: 100%;
+
+    padding: 0;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(115, 230, 255, 0.18);
+
+    border-radius: 12px;
+
+    background:
+        #020916;
+
+    cursor: pointer;
+
+    text-align: left;
+}
+
+
+.photo-button img {
+
+    display: block;
+
+    width: 100%;
+
+    height: auto;
+
+    max-height: 300px;
+
+    object-fit: contain;
+
+    transition:
+        transform 0.3s ease,
+        filter 0.3s ease;
+}
+
+
+.photo-button:hover img {
+
+    transform: scale(1.025);
+
+    filter:
+        brightness(0.72);
+}
+
+
+.photo-view {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(
+            -50%,
+            -50%
+        );
+
+    padding:
+        9px
+        14px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.25);
+
+    border-radius: 999px;
+
+    background:
+        rgba(3, 10, 25, 0.82);
+
+    color: white;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    opacity: 0;
+
+    transition:
+        opacity 0.25s ease;
+
+    backdrop-filter: blur(8px);
+
+    pointer-events: none;
+}
+
+
+.photo-button:hover .photo-view,
+.photo-button:focus-visible .photo-view {
+
+    opacity: 1;
+}
+
+
+/* =========================================
+   CURRENCY
+========================================= */
+
+.currency-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+
+.currency-info {
+
+    min-width: 150px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+}
+
+
+.currency-info strong {
+
+    color: white;
+
+    font-size: 14px;
+}
+
+
+.currency-logo {
+
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    object-fit: contain;
+
+    padding: 5px;
+
+    border:
+        1px solid
+        rgba(115, 230, 255, 0.18);
+
+    border-radius: 10px;
+
+    background:
+        rgba(5, 18, 39, 0.75);
+
+    box-shadow:
+        0 5px 20px
+        rgba(0, 0, 0, 0.2);
+}
+
+
+/* =========================================
    COMMAND + COPY
 ========================================= */
 
 .command-copy {
+
+    min-width: 0;
 
     display: flex;
 
     align-items: center;
 
     gap: 8px;
+
+    flex: 1;
 }
 
 
@@ -961,6 +1103,189 @@ section {
 
 
 /* =========================================
+   IMAGE LIGHTBOX
+========================================= */
+
+.image-modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 25px;
+
+    visibility: hidden;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+
+.image-modal.active {
+
+    visibility: visible;
+
+    opacity: 1;
+
+    pointer-events: auto;
+}
+
+
+.image-modal-backdrop {
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        rgba(0, 3, 12, 0.88);
+
+    backdrop-filter:
+        blur(8px);
+}
+
+
+.image-modal-content {
+
+    position: relative;
+
+    z-index: 2;
+
+    width: min(
+        1100px,
+        100%
+    );
+
+    max-height: 92vh;
+
+    padding: 20px;
+
+    border:
+        1px solid
+        rgba(130, 200, 255, 0.25);
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(8, 23, 49, 0.96),
+            rgba(2, 9, 23, 0.98)
+        );
+
+    box-shadow:
+        0 30px 100px
+        rgba(0, 0, 0, 0.65);
+
+    transform:
+        scale(0.96);
+
+    transition:
+        transform 0.25s ease;
+}
+
+
+.image-modal.active
+.image-modal-content {
+
+    transform:
+        scale(1);
+}
+
+
+.image-modal-content img {
+
+    display: block;
+
+    width: 100%;
+
+    max-height: 78vh;
+
+    object-fit: contain;
+
+    border-radius: 10px;
+}
+
+
+.image-modal-title {
+
+    padding:
+        0
+        45px
+        14px
+        2px;
+
+    color: #dff7ff;
+
+    font-size: 14px;
+
+    font-weight: 800;
+}
+
+
+.image-modal-close {
+
+    position: absolute;
+
+    top: 10px;
+    right: 10px;
+
+    width: 38px;
+    height: 38px;
+
+    z-index: 3;
+
+    display: grid;
+
+    place-items: center;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.20);
+
+    border-radius: 50%;
+
+    background:
+        rgba(4, 12, 28, 0.85);
+
+    color: white;
+
+    font-size: 25px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.image-modal-close:hover {
+
+    background:
+        rgba(255, 50, 90, 0.30);
+
+    transform:
+        rotate(90deg);
+}
+
+
+/* =========================================
    FOOTER
 ========================================= */
 
@@ -995,6 +1320,7 @@ footer {
     gap: 20px;
 }
 
+
 .footer-social {
 
     display: flex;
@@ -1020,69 +1346,12 @@ footer {
 }
 
 
-@media (max-width: 700px) {
-
-    .footer-social {
-
-        order: 2;
-    }
-
-}
 /* =========================================
-   ANIMATION
-========================================= */
-
-.fade-in {
-
-    opacity: 0;
-
-    transform:
-        translateY(18px);
-
-    transition:
-        opacity 0.7s ease,
-        transform 0.7s ease;
-}
-
-
-.fade-in.visible {
-
-    opacity: 1;
-
-    transform:
-        translateY(0);
-}
-
-
-/* =========================================
-   TABLET
-========================================= */
-
-@media (max-width: 850px) {
-
-    .nav-links {
-        display: none;
-    }
-
-    .downloads-grid,
-    .other-grid,
-    .commands-grid {
-
-        grid-template-columns: 1fr;
-    }
-
-    .hero {
-
-        padding-top: 120px;
-    }
-
-}
-
-/* =========================================
-   HOW TO USE COMMANDS
+   GUIDE
 ========================================= */
 
 .guide-container {
+
     display: flex;
 
     flex-direction: column;
@@ -1090,10 +1359,6 @@ footer {
     gap: 20px;
 }
 
-
-/* =========================================
-   GUIDE CARD
-========================================= */
 
 .guide-card {
 
@@ -1110,7 +1375,6 @@ footer {
     gap: 25px;
 
     border-radius: 24px;
-
 }
 
 
@@ -1138,10 +1402,6 @@ footer {
     opacity: 0.8;
 }
 
-
-/* =========================================
-   GUIDE NUMBER
-========================================= */
 
 .guide-number {
 
@@ -1172,16 +1432,8 @@ footer {
     font-weight: 900;
 
     letter-spacing: 0.08em;
-
-    box-shadow:
-        0 0 35px
-        rgba(82, 192, 255, 0.08);
 }
 
-
-/* =========================================
-   GUIDE CONTENT
-========================================= */
 
 .guide-content {
     min-width: 0;
@@ -1233,8 +1485,6 @@ footer {
         7px;
 
     font-size: 24px;
-
-    letter-spacing: -0.02em;
 }
 
 
@@ -1249,10 +1499,6 @@ footer {
     font-size: 14px;
 }
 
-
-/* =========================================
-   GUIDE INSTRUCTION
-========================================= */
 
 .guide-instruction {
 
@@ -1299,10 +1545,6 @@ footer {
 }
 
 
-/* =========================================
-   GUIDE IMAGE
-========================================= */
-
 .guide-image-wrapper {
 
     overflow: hidden;
@@ -1315,10 +1557,6 @@ footer {
 
     background:
         #020812;
-
-    box-shadow:
-        0 25px 70px
-        rgba(0, 0, 0, 0.35);
 }
 
 
@@ -1333,22 +1571,8 @@ footer {
     max-height: 700px;
 
     object-fit: contain;
-
-    transition:
-        transform 0.4s ease;
 }
 
-
-.guide-image-wrapper:hover .guide-image {
-
-    transform:
-        scale(1.015);
-}
-
-
-/* =========================================
-   IMAGE CAPTION
-========================================= */
 
 .image-caption {
 
@@ -1382,8 +1606,6 @@ footer {
 
     color:
         #71dcff;
-
-    font-size: 13px;
 }
 
 
@@ -1410,10 +1632,6 @@ footer {
     font-size: 12px;
 }
 
-
-/* =========================================
-   GUIDE STEPS
-========================================= */
 
 .guide-steps {
 
@@ -1515,10 +1733,6 @@ footer {
 }
 
 
-/* =========================================
-   GUIDE COMMAND
-========================================= */
-
 .guide-command {
 
     margin-top: 18px;
@@ -1588,10 +1802,6 @@ footer {
 }
 
 
-/* =========================================
-   NEXT GUIDE
-========================================= */
-
 .guide-next {
 
     display: flex;
@@ -1652,73 +1862,56 @@ footer {
     font-size: 13px;
 }
 
+
 /* =========================================
-   TIKTOK
+   ANIMATION
 ========================================= */
 
-.btn-tiktok {
+.fade-in {
 
-    background:
-        linear-gradient(
-            135deg,
-            #111827,
-            #111827
-        );
+    opacity: 0;
 
-    border-color:
-        rgba(255, 255, 255, 0.20);
-
-    box-shadow:
-        0 10px 30px
-        rgba(0, 0, 0, 0.25);
-}
-
-
-.btn-tiktok:hover {
-
-    background:
-        linear-gradient(
-            135deg,
-            #ff0050,
-            #00f2ea
-        );
-
-    border-color:
-        rgba(255, 255, 255, 0.5);
-
-    box-shadow:
-        0 12px 35px
-        rgba(255, 0, 80, 0.22);
-}
-
-
-.btn-tiktok svg {
-
-    width: 19px;
-    height: 19px;
-}
-
-
-.nav-tiktok {
-
-    color: #ff8baa !important;
-
-    font-weight: 800;
+    transform:
+        translateY(18px);
 
     transition:
-        color 0.2s ease,
-        text-shadow 0.2s ease;
+        opacity 0.7s ease,
+        transform 0.7s ease;
 }
 
 
-.nav-tiktok:hover {
+.fade-in.visible {
 
-    color: #ffffff !important;
+    opacity: 1;
 
-    text-shadow:
-        0 0 15px
-        rgba(255, 0, 80, 0.7);
+    transform:
+        translateY(0);
 }
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 850px) {
+
+    .nav-links {
+        display: none;
+    }
+
+    .other-grid,
+    .commands-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+
+        padding-top: 120px;
+    }
+
+}
+
 
 /* =========================================
    MOBILE GUIDE
@@ -1768,7 +1961,48 @@ footer {
         width: 100%;
     }
 
+
+    .currency-row {
+
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+
+    .currency-info {
+
+        min-width: 0;
+    }
+
+
+    .command-copy {
+
+        width: 100%;
+    }
+
+
+    .image-modal {
+
+        padding: 12px;
+    }
+
+
+    .image-modal-content {
+
+        padding: 14px;
+
+        max-height: 94vh;
+    }
+
+
+    .image-modal-content img {
+
+        max-height: 78vh;
+    }
+
 }
+
 
 /* =========================================
    MOBILE
@@ -1834,10 +2068,20 @@ footer {
     .command-copy {
 
         align-items: stretch;
+
+        flex-direction: column;
+    }
+
+
+    .command-copy code {
+
+        width: 100%;
     }
 
 
     .copy-btn {
+
+        width: 100%;
 
         flex-shrink: 0;
     }
@@ -1848,6 +2092,24 @@ footer {
         flex-direction: column;
 
         align-items: flex-start;
+    }
+
+
+    .footer-social {
+
+        order: 2;
+    }
+
+
+    .photo-button img {
+
+        max-height: 220px;
+    }
+
+
+    .image-modal-title {
+
+        font-size: 13px;
     }
 
 }
