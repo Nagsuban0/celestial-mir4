@@ -7,14 +7,10 @@
    FOOTER YEAR
 ========================================= */
 
-const yearElement =
-    document.getElementById("year");
+const yearElement = document.getElementById("year");
 
 if (yearElement) {
-
-    yearElement.textContent =
-        new Date().getFullYear();
-
+    yearElement.textContent = new Date().getFullYear();
 }
 
 
@@ -22,435 +18,270 @@ if (yearElement) {
    COPY COMMAND BUTTONS
 ========================================= */
 
-const copyButtons =
-    document.querySelectorAll(".copy-btn");
-
+const copyButtons = document.querySelectorAll(".copy-btn");
 
 copyButtons.forEach((button) => {
-
     button.addEventListener("click", async () => {
+        const command = button.dataset.copy;
 
-        const command =
-            button.dataset.copy;
+        if (!command) return;
 
-        const originalText =
-            button.textContent;
-
+        const originalText = button.textContent;
 
         try {
-
-            /*
-             * Modern Clipboard API
-             */
-
-            if (
-                navigator.clipboard &&
-                window.isSecureContext
-            ) {
-
-                await navigator.clipboard.writeText(
-                    command
-                );
-
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(command);
             } else {
-
-                throw new Error(
-                    "Clipboard API unavailable"
-                );
-
+                throw new Error("Clipboard API unavailable");
             }
-
         } catch (error) {
+            const temporaryTextArea = document.createElement("textarea");
 
-            /*
-             * Fallback
-             */
+            temporaryTextArea.value = command;
+            temporaryTextArea.style.position = "fixed";
+            temporaryTextArea.style.left = "-9999px";
+            temporaryTextArea.style.opacity = "0";
 
-            const temporaryTextArea =
-                document.createElement("textarea");
-
-
-            temporaryTextArea.value =
-                command;
-
-
-            temporaryTextArea.style.position =
-                "fixed";
-
-            temporaryTextArea.style.left =
-                "-9999px";
-
-            temporaryTextArea.style.opacity =
-                "0";
-
-
-            document.body.appendChild(
-                temporaryTextArea
-            );
-
+            document.body.appendChild(temporaryTextArea);
 
             temporaryTextArea.focus();
-
             temporaryTextArea.select();
 
-
             try {
+                const successful = document.execCommand("copy");
 
-                document.execCommand("copy");
-
+                if (!successful) {
+                    throw new Error("Copy command failed");
+                }
             } catch (fallbackError) {
+                console.error("Unable to copy command:", fallbackError);
 
-                console.error(
-                    "Unable to copy command:",
-                    fallbackError
-                );
+                button.textContent = "Copy failed";
+                button.classList.remove("copied");
 
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1300);
+
+                temporaryTextArea.remove();
+                return;
             }
 
-
             temporaryTextArea.remove();
-
         }
 
-
-        button.textContent =
-            "Copied!";
-
-
-        button.classList.add(
-            "copied"
-        );
-
+        button.textContent = "Copied!";
+        button.classList.add("copied");
 
         setTimeout(() => {
-
-            button.textContent =
-                originalText;
-
-            button.classList.remove(
-                "copied"
-            );
-
+            button.textContent = originalText;
+            button.classList.remove("copied");
         }, 1300);
-
     });
-
 });
 
 
 /* =========================================
    IMAGE VIEWER / LIGHTBOX
+   Supports all .photo-button elements,
+   including database and guild screenshots.
 ========================================= */
 
-const imageModal =
-    document.getElementById(
-        "imageModal"
-    );
+const imageModal = document.getElementById("imageModal");
+const modalImage = document.getElementById("modalImage");
+const modalTitle = document.getElementById("imageModalTitle");
+const modalClose = document.getElementById("imageModalClose");
+
+let previousFocusedElement = null;
 
 
-const modalImage =
-    document.getElementById(
-        "modalImage"
-    );
+/* Open the image viewer */
 
-
-const modalTitle =
-    document.getElementById(
-        "imageModalTitle"
-    );
-
-
-const modalClose =
-    document.getElementById(
-        "imageModalClose"
-    );
-
-
-const photoButtons =
-    document.querySelectorAll(
-        ".photo-button"
-    );
-
-
-/*
- * Open image viewer
- */
-
-function openImageViewer(
-    imageSource,
-    imageTitle
-) {
-
-    if (
-        !imageModal ||
-        !modalImage
-    ) {
+function openImageViewer(imageSource, imageTitle, imageAlt = "") {
+    if (!imageModal || !modalImage || !imageSource) {
         return;
     }
 
+    previousFocusedElement = document.activeElement;
 
-    modalImage.src =
-        imageSource;
-
-
-    modalImage.alt =
-        imageTitle;
-
+    modalImage.src = imageSource;
+    modalImage.alt = imageAlt || imageTitle || "CMir4 screenshot";
 
     if (modalTitle) {
-
-        modalTitle.textContent =
-            imageTitle;
-
+        modalTitle.textContent = imageTitle || "Screenshot";
     }
 
+    imageModal.classList.add("active");
+    imageModal.setAttribute("aria-hidden", "false");
 
-    imageModal.classList.add(
-        "active"
-    );
-
-
-    imageModal.setAttribute(
-        "aria-hidden",
-        "false"
-    );
-
-
-    document.body.style.overflow =
-        "hidden";
-
+    document.body.style.overflow = "hidden";
 
     if (modalClose) {
-
         modalClose.focus();
-
     }
-
 }
 
 
-/*
- * Close image viewer
- */
+/* Close the image viewer */
 
 function closeImageViewer() {
-
-    if (!imageModal) {
+    if (!imageModal || !imageModal.classList.contains("active")) {
         return;
     }
 
+    imageModal.classList.remove("active");
+    imageModal.setAttribute("aria-hidden", "true");
 
-    imageModal.classList.remove(
-        "active"
-    );
+    document.body.style.overflow = "";
 
-
-    imageModal.setAttribute(
-        "aria-hidden",
-        "true"
-    );
-
-
-    document.body.style.overflow =
-        "";
-
-
-    /*
-     * Clear image after animation.
-     */
+    if (previousFocusedElement && typeof previousFocusedElement.focus === "function") {
+        previousFocusedElement.focus();
+    }
 
     setTimeout(() => {
-
-        if (
-            !imageModal.classList.contains(
-                "active"
-            )
-        ) {
-
+        if (!imageModal.classList.contains("active")) {
             if (modalImage) {
-
-                modalImage.src =
-                    "";
-
-                modalImage.alt =
-                    "";
-
+                modalImage.removeAttribute("src");
+                modalImage.alt = "";
             }
-
         }
-
     }, 250);
-
 }
 
 
-/*
- * Photo buttons
- */
+/* Attach click handlers using delegation.
+   Newly added photo buttons work automatically. */
 
-photoButtons.forEach((button) => {
+document.addEventListener("click", (event) => {
+    const photoButton = event.target.closest(".photo-button");
 
-    button.addEventListener(
-        "click",
-        () => {
+    if (!photoButton) return;
 
-            const imageSource =
-                button.dataset.image;
+    const image = photoButton.querySelector("img");
 
-            const imageTitle =
-                button.dataset.title ||
-                "Screenshot";
+    const imageSource =
+        photoButton.dataset.image ||
+        (image ? image.currentSrc || image.src : "");
 
+    const imageTitle =
+        photoButton.dataset.title ||
+        (image ? image.alt : "") ||
+        "CMir4 Screenshot";
 
-            if (imageSource) {
+    const imageAlt =
+        image ? image.alt : imageTitle;
 
-                openImageViewer(
-                    imageSource,
-                    imageTitle
-                );
-
-            }
-
-        }
-    );
-
+    if (imageSource) {
+        openImageViewer(imageSource, imageTitle, imageAlt);
+    }
 });
 
 
-/*
- * Close button
- */
+/* Close button */
 
 if (modalClose) {
-
-    modalClose.addEventListener(
-        "click",
-        closeImageViewer
-    );
-
+    modalClose.addEventListener("click", closeImageViewer);
 }
 
 
-/*
- * Click outside image
- */
+/* Click outside the image */
 
 if (imageModal) {
-
-    imageModal.addEventListener(
-        "click",
-        (event) => {
-
-            if (
-                event.target.matches(
-                    "[data-close-modal]"
-                )
-            ) {
-
-                closeImageViewer();
-
-            }
-
+    imageModal.addEventListener("click", (event) => {
+        if (event.target.closest("[data-close-modal]")) {
+            closeImageViewer();
         }
-    );
-
+    });
 }
 
 
-/*
- * ESC key
- */
+/* Escape key */
 
-document.addEventListener(
-    "keydown",
-    (event) => {
-
-        if (
-            event.key === "Escape" &&
-            imageModal &&
-            imageModal.classList.contains(
-                "active"
-            )
-        ) {
-
-            closeImageViewer();
-
-        }
-
+document.addEventListener("keydown", (event) => {
+    if (
+        event.key === "Escape" &&
+        imageModal &&
+        imageModal.classList.contains("active")
+    ) {
+        closeImageViewer();
     }
-);
+});
+
+
+/* =========================================
+   IMAGE ERROR HANDLING
+   Displays a useful message when a photo
+   path is incorrect or the image is missing.
+========================================= */
+
+document.querySelectorAll("img").forEach((image) => {
+    image.addEventListener("error", () => {
+        image.classList.add("image-load-error");
+        image.setAttribute("data-image-error", "true");
+    });
+
+    image.addEventListener("load", () => {
+        image.classList.remove("image-load-error");
+        image.removeAttribute("data-image-error");
+    });
+});
 
 
 /* =========================================
    SCROLL REVEAL ANIMATION
 ========================================= */
 
-const fadeElements =
-    document.querySelectorAll(
-        ".fade-in"
+const fadeElements = document.querySelectorAll(".fade-in");
+
+if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target);
+                }
+            });
+        },
+        {
+            threshold: 0.12
+        }
     );
 
+    fadeElements.forEach((element) => {
+        observer.observe(element);
+    });
+} else {
+    fadeElements.forEach((element) => {
+        element.classList.add("visible");
+    });
+}
+
+
+/* =========================================
+   DATABASE LINK TRACKING / VALIDATION
+   Keeps database cards as normal links.
+========================================= */
+
+document.querySelectorAll(
+    '#commands a[href*="db.celestialmir4.com"]'
+).forEach((link) => {
+    link.setAttribute("target", "_blank");
+    link.setAttribute("rel", "noopener noreferrer");
+});
+
+
+/* =========================================
+   ACCESSIBILITY: REDUCED MOTION
+========================================= */
 
 if (
-    "IntersectionObserver" in window
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
 ) {
+    document.documentElement.style.scrollBehavior = "auto";
 
-    const observer =
-        new IntersectionObserver(
-            (entries) => {
-
-                entries.forEach(
-                    (entry) => {
-
-                        if (
-                            entry.isIntersecting
-                        ) {
-
-                            entry.target.classList.add(
-                                "visible"
-                            );
-
-
-                            observer.unobserve(
-                                entry.target
-                            );
-
-                        }
-
-                    }
-                );
-
-            },
-            {
-                threshold: 0.12
-            }
-        );
-
-
-    fadeElements.forEach(
-        (element) => {
-
-            observer.observe(
-                element
-            );
-
-        }
-    );
-
-} else {
-
-    /*
-     * Fallback for old browsers.
-     */
-
-    fadeElements.forEach(
-        (element) => {
-
-            element.classList.add(
-                "visible"
-            );
-
-        }
-    );
-
+    document.querySelectorAll(".fade-in").forEach((element) => {
+        element.classList.add("visible");
+    });
 }
