@@ -12,57 +12,53 @@
 
 <body>
 
-    <!-- ================= HEADER ================= -->
+   <!-- ================= HEADER ================= -->
 
-    <header class="header">
+<header class="header" id="siteHeader">
 
-        <div class="container nav">
+    <div class="container nav">
 
-            <a href="#home" class="brand">
+        <a href="#home" class="brand">
+            <span class="brand-icon">✦</span>
+            <span>Celestial MIR4</span>
+        </a>
 
-                <span class="brand-icon">
-                    ✦
-                </span>
+        <button
+            class="nav-toggle"
+            id="navToggle"
+            type="button"
+            aria-label="Toggle navigation menu"
+            aria-expanded="false"
+            aria-controls="navLinks"
+        >
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
 
-                <span>
-                    Celestial MIR4
-                </span>
+        <nav class="nav-links" id="navLinks">
 
+            <a href="#home">Downloads</a>
+            <a href="#commands">Commands</a>
+            <a href="/Doopa-Database.html">Database</a>
+            <a href="#how-to-use">How To Use</a>
+            <a href="#other">Other</a>
+            <a href="#account-currency">Currency Commands</a>
+
+            <a
+                href="https://www.tiktok.com/@DoopaOfficial1"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="nav-tiktok"
+            >
+                TikTok
             </a>
 
+        </nav>
 
-            <nav class="nav-links">
+    </div>
 
-                <a href="#downloads">
-                    Downloads
-                </a>
-
-                <a href="#commands">
-                    Commands
-                </a>
-
-                <a href="#how-to-use">
-                    How To Use
-                </a>
-
-                <a href="#other">
-                    Other
-                </a>
-
-                <a
-                    href="https://www.tiktok.com/@DoopaOfficial1"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="nav-tiktok"
-                >
-                    TikTok
-                </a>
-
-            </nav>
-
-        </div>
-
-    </header>
+</header>
 
 
     <!-- ================= MAIN ================= -->
@@ -756,7 +752,7 @@
 
                 <a
                     class="btn database-main-btn"
-                    href="https://db.celestialmir4.com/#database"
+                    href="/Doopa-Database.html"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
@@ -841,7 +837,7 @@
 
             <a
                 class="command-card glass fade-in"
-                href="https://db.celestialmir4.com/#database"
+                href="/Doopa-Database.html"
                 target="_blank"
                 rel="noopener noreferrer"
             >
@@ -883,7 +879,7 @@
 
             <a
                 class="command-card glass fade-in"
-                href="https://db.celestialmir4.com/#commands"
+                href="/index.html#account-currency"
                 target="_blank"
                 rel="noopener noreferrer"
             >
@@ -1679,412 +1675,302 @@
                     </div>
 
 
-                    <!-- ================= ACCOUNT CURRENCY ================= -->
 
-                    <div class="other-card glass fade-in">
+<!-- ================= ACCOUNT CURRENCY ================= -->
 
-                        <h3>
-                            Account Currency
-                        </h3>
+<section id="account-currency">
+    <div class="container">
 
+        <div class="section-heading currency-heading">
+            <span class="kicker">CELESTIAL MIR4 / RESOURCES</span>
+            <h2>Account Currency</h2>
+            <p>
+                Select your desired currency command and copy it
+                to use in your game administration tools.
+            </p>
+        </div>
 
-                        <!-- Dragonsteel -->
+        <div class="currency-panel glass fade-in">
 
-                        <div class="command-row currency-row">
+            <div class="currency-panel-header">
+                <div class="currency-panel-title">
+                    <span class="currency-panel-icon">✦</span>
 
-                            <div class="currency-info">
-
-                                <img
-                                    class="currency-logo"
-                                    src="images/dragonsteel.jfif"
-                                    alt="Dragonsteel"
-                                    loading="lazy"
-                                >
-
-                                <strong>
-                                    Dragonsteel
-                                </strong>
-
-                            </div>
-
-
-                            <div class="command-copy">
-
-                                <code>
-                                    givecurrency 23 1000000000000
-                                </code>
-
-                                <button
-                                    class="copy-btn"
-                                    data-copy="givecurrency 23 1000000000000"
-                                >
-                                    Copy
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Ancient Coins -->
-
-                        <div class="command-row currency-row">
-
-                            <div class="currency-info">
-
-                                <img
-                                    class="currency-logo"
-                                    src="images/ancient-coins.jfif"
-                                    alt="Ancient Coins"
-                                    loading="lazy"
-                                >
-
-                                <strong>
-                                    Ancient Coins
-                                </strong>
-
-                            </div>
-
-
-                            <div class="command-copy">
-
-                                <code>
-                                    givecurrency 20 1000000000000
-                                </code>
-
-                                <button
-                                    class="copy-btn"
-                                    data-copy="givecurrency 20 1000000000000"
-                                >
-                                    Copy
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Dragon Jade -->
-
-                        <div class="command-row currency-row">
-
-                            <div class="currency-info">
-
-                                <img
-                                    class="currency-logo"
-                                    src="images/dragon-jade.jfif"
-                                    alt="Dragon Jade"
-                                    loading="lazy"
-                                >
-
-                                <strong>
-                                    Dragon Jade
-                                </strong>
-
-                            </div>
-
-
-                            <div class="command-copy">
-
-                                <code>
-                                    givecurrency 19 1000000000000
-                                </code>
-
-                                <button
-                                    class="copy-btn"
-                                    data-copy="givecurrency 19 1000000000000"
-                                >
-                                    Copy
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Speed Ups -->
-
-                        <div class="command-row currency-row">
-
-                            <div class="currency-info">
-
-                                <img
-                                    class="currency-logo"
-                                    src="images/speed-ups.jfif"
-                                    alt="Speed Ups"
-                                    loading="lazy"
-                                >
-
-                                <strong>
-                                    Speed Ups
-                                </strong>
-
-                            </div>
-
-
-                            <div class="command-copy">
-
-                                <code>
-                                    givecurrency 18 1000000000000
-                                </code>
-
-                                <button
-                                    class="copy-btn"
-                                    data-copy="givecurrency 18 1000000000000"
-                                >
-                                    Copy
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Clan Coins -->
-
-                        <div class="command-row currency-row">
-
-                            <div class="currency-info">
-
-                                <img
-                                    class="currency-logo"
-                                    src="images/clan-coins.jfif"
-                                    alt="Clan Coins"
-                                    loading="lazy"
-                                >
-
-                                <strong>
-                                    Clan Coins
-                                </strong>
-
-                            </div>
-
-
-                            <div class="command-copy">
-
-                                <code>
-                                    givecurrency 17 1000000000000
-                                </code>
-
-                                <button
-                                    class="copy-btn"
-                                    data-copy="givecurrency 17 1000000000000"
-                                >
-                                    Copy
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Darksteel -->
-
-                        <div class="command-row currency-row">
-
-                            <div class="currency-info">
-
-                                <img
-                                    class="currency-logo"
-                                    src="images/darksteel.jfif"
-                                    alt="Darksteel"
-                                    loading="lazy"
-                                >
-
-                                <strong>
-                                    Darksteel
-                                </strong>
-
-                            </div>
-
-
-                            <div class="command-copy">
-
-                                <code>
-                                    givecurrency 12 1000000000000
-                                </code>
-
-                                <button
-                                    class="copy-btn"
-                                    data-copy="givecurrency 12 1000000000000"
-                                >
-                                    Copy
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Energy -->
-
-                        <div class="command-row currency-row">
-
-                            <div class="currency-info">
-
-                                <img
-                                    class="currency-logo"
-                                    src="images/energy.jfif"
-                                    alt="Energy"
-                                    loading="lazy"
-                                >
-
-                                <strong>
-                                    Energy
-                                </strong>
-
-                            </div>
-
-
-                            <div class="command-copy">
-
-                                <code>
-                                    givecurrency 11 1000000000000
-                                </code>
-
-                                <button
-                                    class="copy-btn"
-                                    data-copy="givecurrency 11 1000000000000"
-                                >
-                                    Copy
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Mileage -->
-
-                        <div class="command-row currency-row">
-
-                            <div class="currency-info">
-
-                                <img
-                                    class="currency-logo"
-                                    src="images/mileage.jfif"
-                                    alt="Mileage"
-                                    loading="lazy"
-                                >
-
-                                <strong>
-                                    Mileage
-                                </strong>
-
-                            </div>
-
-
-                            <div class="command-copy">
-
-                                <code>
-                                    givecurrency 6 1000000000000
-                                </code>
-
-                                <button
-                                    class="copy-btn"
-                                    data-copy="givecurrency 6 1000000000000"
-                                >
-                                    Copy
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Gold -->
-
-                        <div class="command-row currency-row">
-
-                            <div class="currency-info">
-
-                                <img
-                                    class="currency-logo"
-                                    src="images/gold.jfif"
-                                    alt="Gold"
-                                    loading="lazy"
-                                >
-
-                                <strong>
-                                    Gold
-                                </strong>
-
-                            </div>
-
-
-                            <div class="command-copy">
-
-                                <code>
-                                    givecurrency 4 1000000000000
-                                </code>
-
-                                <button
-                                    class="copy-btn"
-                                    data-copy="givecurrency 4 1000000000000"
-                                >
-                                    Copy
-                                </button>
-
-                            </div>
-
-                        </div>
-
+                    <div>
+                        <h3>Currency Collection</h3>
+                        <p>Available currency commands</p>
                     </div>
-
                 </div>
 
+                <span class="currency-count">09 CURRENCIES</span>
             </div>
 
-        </section>
+            <div class="currency-grid">
 
-    </main>
+                <!-- Dragonsteel -->
+                <article class="currency-card">
+                    <div class="currency-info">
+                        <img
+                            class="currency-logo"
+                            src="images/dragonsteel.jfif"
+                            alt="Dragonsteel"
+                            loading="lazy"
+                        >
 
+                        <div class="currency-details">
+                            <strong>Dragonsteel</strong>
+                            <span>Currency ID: 23</span>
+                        </div>
+                    </div>
 
-    <!-- ================= IMAGE VIEWER ================= -->
+                    <div class="command-copy">
+                        <code>givecurrency 23 1000000000000</code>
 
-    <div
-        class="image-modal"
-        id="imageModal"
-        aria-hidden="true"
-    >
+                        <button
+                            class="copy-btn"
+                            type="button"
+                            data-copy="givecurrency 23 1000000000000"
+                            aria-label="Copy Dragonsteel command"
+                        >Copy</button>
+                    </div>
+                </article>
 
-        <div
-            class="image-modal-backdrop"
-            data-close-modal
-        ></div>
+                <!-- Ancient Coins -->
+                <article class="currency-card">
+                    <div class="currency-info">
+                        <img
+                            class="currency-logo"
+                            src="images/ancient-coins.jfif"
+                            alt="Ancient Coins"
+                            loading="lazy"
+                        >
 
+                        <div class="currency-details">
+                            <strong>Ancient Coins</strong>
+                            <span>Currency ID: 20</span>
+                        </div>
+                    </div>
 
-        <div
-            class="image-modal-content"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="imageModalTitle"
-        >
+                    <div class="command-copy">
+                        <code>givecurrency 20 1000000000000</code>
 
-            <button
-                class="image-modal-close"
-                id="imageModalClose"
-                type="button"
-                aria-label="Close image viewer"
-            >
-                ×
-            </button>
+                        <button
+                            class="copy-btn"
+                            type="button"
+                            data-copy="givecurrency 20 1000000000000"
+                            aria-label="Copy Ancient Coins command"
+                        >Copy</button>
+                    </div>
+                </article>
 
+                <!-- Dragon Jade -->
+                <article class="currency-card">
+                    <div class="currency-info">
+                        <img
+                            class="currency-logo"
+                            src="images/dragon-jade.jfif"
+                            alt="Dragon Jade"
+                            loading="lazy"
+                        >
 
-            <div class="image-modal-title" id="imageModalTitle">
-                Screenshot
+                        <div class="currency-details">
+                            <strong>Dragon Jade</strong>
+                            <span>Currency ID: 19</span>
+                        </div>
+                    </div>
+
+                    <div class="command-copy">
+                        <code>givecurrency 19 1000000000000</code>
+
+                        <button
+                            class="copy-btn"
+                            type="button"
+                            data-copy="givecurrency 19 1000000000000"
+                            aria-label="Copy Dragon Jade command"
+                        >Copy</button>
+                    </div>
+                </article>
+
+                <!-- Speed Ups -->
+                <article class="currency-card">
+                    <div class="currency-info">
+                        <img
+                            class="currency-logo"
+                            src="images/speed-ups.jfif"
+                            alt="Speed Ups"
+                            loading="lazy"
+                        >
+
+                        <div class="currency-details">
+                            <strong>Speed Ups</strong>
+                            <span>Currency ID: 18</span>
+                        </div>
+                    </div>
+
+                    <div class="command-copy">
+                        <code>givecurrency 18 1000000000000</code>
+
+                        <button
+                            class="copy-btn"
+                            type="button"
+                            data-copy="givecurrency 18 1000000000000"
+                            aria-label="Copy Speed Ups command"
+                        >Copy</button>
+                    </div>
+                </article>
+
+                <!-- Clan Coins -->
+                <article class="currency-card">
+                    <div class="currency-info">
+                        <img
+                            class="currency-logo"
+                            src="images/clan-coins.jfif"
+                            alt="Clan Coins"
+                            loading="lazy"
+                        >
+
+                        <div class="currency-details">
+                            <strong>Clan Coins</strong>
+                            <span>Currency ID: 17</span>
+                        </div>
+                    </div>
+
+                    <div class="command-copy">
+                        <code>givecurrency 17 1000000000000</code>
+
+                        <button
+                            class="copy-btn"
+                            type="button"
+                            data-copy="givecurrency 17 1000000000000"
+                            aria-label="Copy Clan Coins command"
+                        >Copy</button>
+                    </div>
+                </article>
+
+                <!-- Darksteel -->
+                <article class="currency-card">
+                    <div class="currency-info">
+                        <img
+                            class="currency-logo"
+                            src="images/darksteel.jfif"
+                            alt="Darksteel"
+                            loading="lazy"
+                        >
+
+                        <div class="currency-details">
+                            <strong>Darksteel</strong>
+                            <span>Currency ID: 12</span>
+                        </div>
+                    </div>
+
+                    <div class="command-copy">
+                        <code>givecurrency 12 1000000000000</code>
+
+                        <button
+                            class="copy-btn"
+                            type="button"
+                            data-copy="givecurrency 12 1000000000000"
+                            aria-label="Copy Darksteel command"
+                        >Copy</button>
+                    </div>
+                </article>
+
+                <!-- Energy -->
+                <article class="currency-card">
+                    <div class="currency-info">
+                        <img
+                            class="currency-logo"
+                            src="images/energy.jfif"
+                            alt="Energy"
+                            loading="lazy"
+                        >
+
+                        <div class="currency-details">
+                            <strong>Energy</strong>
+                            <span>Currency ID: 11</span>
+                        </div>
+                    </div>
+
+                    <div class="command-copy">
+                        <code>givecurrency 11 1000000000000</code>
+
+                        <button
+                            class="copy-btn"
+                            type="button"
+                            data-copy="givecurrency 11 1000000000000"
+                            aria-label="Copy Energy command"
+                        >Copy</button>
+                    </div>
+                </article>
+
+                <!-- Mileage -->
+                <article class="currency-card">
+                    <div class="currency-info">
+                        <img
+                            class="currency-logo"
+                            src="images/mileage.jfif"
+                            alt="Mileage"
+                            loading="lazy"
+                        >
+
+                        <div class="currency-details">
+                            <strong>Mileage</strong>
+                            <span>Currency ID: 6</span>
+                        </div>
+                    </div>
+
+                    <div class="command-copy">
+                        <code>givecurrency 6 1000000000000</code>
+
+                        <button
+                            class="copy-btn"
+                            type="button"
+                            data-copy="givecurrency 6 1000000000000"
+                            aria-label="Copy Mileage command"
+                        >Copy</button>
+                    </div>
+                </article>
+
+                <!-- Gold -->
+                <article class="currency-card">
+                    <div class="currency-info">
+                        <img
+                            class="currency-logo"
+                            src="images/gold.jfif"
+                            alt="Gold"
+                            loading="lazy"
+                        >
+
+                        <div class="currency-details">
+                            <strong>Gold</strong>
+                            <span>Currency ID: 4</span>
+                        </div>
+                    </div>
+
+                    <div class="command-copy">
+                        <code>givecurrency 4 1000000000000</code>
+
+                        <button
+                            class="copy-btn"
+                            type="button"
+                            data-copy="givecurrency 4 1000000000000"
+                            aria-label="Copy Gold command"
+                        >Copy</button>
+                    </div>
+                </article>
+
             </div>
 
-
-            <img
-                id="modalImage"
-                src=""
-                alt=""
-            />
+            <div class="currency-panel-footer">
+                <span class="currency-status-dot"></span>
+                <p>Choose a currency and copy its command.</p>
+            </div>
 
         </div>
 
     </div>
+</section>
+
 
 
     <!-- ================= FOOTER ================= -->

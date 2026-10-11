@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MIR4 Item Database</title>
+<style>
+  :root{
+    --bg:#070b16; --panel:#0c1222; --card:#0e1527; --box:#131b2e;
+    --line:#1e2740; --gold:#d4b05a; --text:#f1f3f9; --muted:#8b93a7;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;padding:14px;background:var(--bg);color:var(--text);
+       font-family:Inter,system-ui,sans-serif}
+
+  /* ===== STICKY TOP BAR (Links + Filters) ===== */
+  .top{position:sticky;top:0;z-index:50;background:var(--bg);
+       margin:-14px -14px 14px;padding:10px 14px 10px;
+       box-shadow:0 10px 18px -10px rgba(0,0,0,.7)}
+
+  /* ===== Home + TikTok pills ===== */
+  .follow{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+  .follow a{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 14px 0 10px;
+            background:#0c1222;border:1px solid var(--line);border-radius:999px;
+            color:var(--text);text-decoration:none;font-size:12.5px;font-weight:600;
+            letter-spacing:.02em;transition:border-color .15s, box-shadow .15s}
+  .follow svg{width:16px;height:16px;flex:none}
+  .follow b{color:var(--gold);font-weight:700}
+  .follow .home{color:var(--gold)}
+  .follow .home:hover{border-color:var(--gold);box-shadow:0 0 10px rgba(212,176,90,.25)}
+  .follow .tt:hover{border-color:#25f4ee;box-shadow:-2px 0 10px rgba(37,244,238,.25),2px 0 10px rgba(254,44,85,.25)}
+
+  .filters{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 16px;
+           background:var(--panel);border:1px solid var(--line);
+           border-radius:16px;padding:12px 16px}
+  .field label{display:block;font-size:11px;letter-spacing:.12em;font-weight:700;
+               color:var(--gold);margin-bottom:6px;text-transform:uppercase}
+  input,select{width:100%;height:40px;background:#080c1a;color:var(--text);
+               border:1px solid var(--line);border-radius:10px;padding:0 14px;
+               font-size:15px;font-weight:600;outline:none;min-width:0}
+  input::placeholder{color:#4a5169;font-weight:400}
+  input:focus,select:focus{border-color:var(--gold)}
+  button{cursor:pointer;font-family:inherit}
+  #reset{align-self:end;height:40px;background:#0a1020;color:var(--gold);
+         border:1px solid #6b5a2e;border-radius:10px;font-weight:700;font-size:15px}
+  #reset:hover,.copy:hover{background:#1a2036}
+  #count{color:var(--muted);margin:0 0 12px 4px;font-size:13px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:14px}
+
+  /* ===== Card + grade glow ===== */
+  .card{--gc:#e5e7eb;
+        background:var(--card);border:1px solid color-mix(in srgb,var(--gc) 38%,var(--line));
+        border-radius:18px;padding:14px;
+        box-shadow:0 0 0 1px color-mix(in srgb,var(--gc) 10%,transparent),
+                   0 6px 22px -4px color-mix(in srgb,var(--gc) 32%,transparent),
+                   inset 0 0 28px -14px color-mix(in srgb,var(--gc) 45%,transparent);
+        transition:box-shadow .18s, border-color .18s;
+        content-visibility:auto;contain-intrinsic-size:auto 420px}
+  .card:hover{border-color:color-mix(in srgb,var(--gc) 70%,var(--line));
+        box-shadow:0 0 0 1px color-mix(in srgb,var(--gc) 25%,transparent),
+                   0 8px 28px -2px color-mix(in srgb,var(--gc) 50%,transparent),
+                   inset 0 0 32px -12px color-mix(in srgb,var(--gc) 55%,transparent)}
+  .gc-1{--gc:#e5e7eb}.gc-2{--gc:#2fd29a}.gc-3{--gc:#4da3ff}
+  .gc-4{--gc:#b57bff}.gc-5{--gc:#ffb347}.gc-6{--gc:#ff5d73}
+
+  .head{display:flex;gap:12px}
+  .icon{width:80px;height:80px;flex:none;background:#0a0f20;border:1px solid var(--line);
+        border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .icon img{width:64px;height:64px;object-fit:contain}
+  .name{font-size:17px;font-weight:700;margin:2px 0 8px;word-break:break-word;color:var(--gc)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:12px;font-weight:600;color:#b9c0d4;background:#151d33;
+        border:1px solid var(--line);padding:4px 10px;border-radius:999px}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+  .stat{background:var(--box);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+  .stat small{display:block;font-size:11px;letter-spacing:.08em;color:var(--muted);
+              font-weight:600;text-transform:uppercase}
+  .stat b{font-size:15px}
+  .actions{display:flex;gap:10px}
+  .qty{width:82px;text-align:center}
+  .copy{flex:1;height:42px;background:#0a1020;color:var(--gold);
+        border:1px solid #6b5a2e;border-radius:10px;font-weight:700;font-size:15px}
+  .empty{color:var(--muted);padding:40px;text-align:center;grid-column:1/-1}
+  #more{height:1px}
+
+  @media(max-width:900px){.filters{grid-template-columns:repeat(2,1fr)}}
+
+  /* ===== MOBILE: Search/Grade/Type/Class/Tier/Reset lang ===== */
+  @media(max-width:700px){
+    body{padding:0 8px 14px}
+    .top{margin:0 -8px 10px;padding:6px 8px 8px;border-radius:0 0 14px 14px}
+    .follow{gap:6px;margin-bottom:6px}
+    .follow a{height:26px;font-size:11px;padding:0 10px 0 8px;gap:6px}
+    .follow svg{width:14px;height:14px}
+    .filters{grid-template-columns:repeat(4,1fr);gap:6px;padding:8px;border-radius:12px}
+    .field{order:2}
+    .field label{display:none}
+    .f-search{order:0;grid-column:span 3}
+    #reset{order:1;align-self:stretch}
+    .hide-m{display:none}
+    input,select{height:38px;font-size:13px;padding:0 8px;border-radius:8px}
+    #reset{height:38px;font-size:13px;border-radius:8px}
+    #count{margin:0 0 10px 2px}
+    .name{font-size:16px}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="follow">
+    <a class="home" href="index.html">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 11.5 12 4l9 7.5M5.5 10v10h13V10M10 20v-5h4v5"/>
+      </svg>
+      <span>Back to Home</span>
+    </a>
+
+    <a class="tt" href="https://www.tiktok.com/@DoopaOfficial1" target="_blank" rel="noopener noreferrer">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="#fe2c55" d="M16.6 5.8a4.3 4.3 0 0 1-1.1-2.8h-3v12.2a2.6 2.6 0 1 1-1.8-2.5V9.6a5.7 5.7 0 1 0 4.8 5.6V9.1a7.2 7.2 0 0 0 4.2 1.3V7.4a4.3 4.3 0 0 1-3.1-1.6z" transform="translate(.8 .8)"/>
+        <path fill="#25f4ee" d="M16.6 5.8a4.3 4.3 0 0 1-1.1-2.8h-3v12.2a2.6 2.6 0 1 1-1.8-2.5V9.6a5.7 5.7 0 1 0 4.8 5.6V9.1a7.2 7.2 0 0 0 4.2 1.3V7.4a4.3 4.3 0 0 1-3.1-1.6z" transform="translate(-.8 -.8)"/>
+        <path fill="#fff" d="M16.6 5.8a4.3 4.3 0 0 1-1.1-2.8h-3v12.2a2.6 2.6 0 1 1-1.8-2.5V9.6a5.7 5.7 0 1 0 4.8 5.6V9.1a7.2 7.2 0 0 0 4.2 1.3V7.4a4.3 4.3 0 0 1-3.1-1.6z"/>
+      </svg>
+      <span>Follow to Support <b>@DoopaOfficial1</b></span>
+    </a>
+  </div>
+
+  <div class="filters">
+    <div class="field f-search"><label>Search</label>
+      <input id="search" placeholder="Name, ID, command or new" autocomplete="off"></div>
+    <div class="field"><label>Grade</label><select id="grade"></select></div>
+    <div class="field"><label>Type</label><select id="type"></select></div>
+    <div class="field hide-m"><label>Subtype</label><select id="subtype"></select></div>
+    <div class="field"><label>Class</label><select id="class"></select></div>
+    <div class="field"><label>Tier</label><select id="tier"></select></div>
+    <div class="field hide-m"><label>Language</label><select id="lang"></select></div>
+    <button id="reset">Reset</button>
+  </div>
+</div>
+
+<div id="count"></div>
+<div class="grid" id="grid"></div>
+<div id="more"></div>
+
+<script>
+// ================= SETTINGS =================
+const ITEMS_URL = "items.json";
+const ICON_PATH = icon => `celestial-mir4-icons/Icons/Items/${icon}.png`;
+const COMMAND   = (id, qty) => `giveitem ${id} ${qty}`;
+const NEW_COUNT = 50;
+const PAGE_SIZE = 60;
+
+const PLACEHOLDER = "data:image/svg+xml;utf8," + encodeURIComponent(
+  `<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>
+     <rect width='64' height='64' rx='10' fill='#131b2e'/>
+     <text x='32' y='40' font-size='26' text-anchor='middle' fill='#4a5169'>?</text>
+   </svg>`);
+
+const GRADES = {
+  1:"Common", 2:"Uncommon", 3:"Rare", 4:"Epic", 5:"Legendary", 6:"Mythic"
+};
+
+const TYPES = {
+  2:"Weapon", 3:"Armor", 4:"Accessories", 5:"Material", 6:"Box",
+  7:"Upgrade Material", 8:"Magic Stone", 9:"Herb", 10:"Special Material",
+  11:"Wearable", 12:"Skill Tome", 13:"Monster Drop", 14:"Collectible",
+  18:"Summon Ticket", 20:"Secondary Weapon",
+  21:"Mystical Piece", 22:"Majestic Gear", 23:"Soul Orb", 24:"Relic",
+  26:"Ring", 27:"Quartz", 28:"Drakazan Soul Orb",
+  // Custom
+  101:"Mystery Codex", 102:"Time Limited Codex", 103:"Reputation Codex",
+  104:"Spirit Pet", 105:"Spirit Treasure Pet", 106:"Potion"
+};
+
+// SubType ay depende sa Type:  SUBTYPES[MainType][SubType]
+const SUBTYPES = {
+  2: { 1:"Warrior Weapon", 2:"Sorcerer Weapon", 3:"Taoist Weapon", 4:"Arbalist Weapon (Bow)",
+       5:"Lancer Weapon (Spear)", 6:"Darkist Weapon (Torch)", 7:"Lionheart Weapon (Bracers)",
+       8:"Summoner Weapon (Quarterstaff)" },
+  3: { 1:"Top", 2:"Legs", 3:"Gloves", 4:"Boots" },
+  4: { 1:"Necklace", 2:"Bracelet", 3:"Ring", 4:"Earrings", 5:"Medallion", 6:"Charm" },
+  5: { 1:"Material", 8:"Enhancement Stone", 12:"Dragon Orb", 16:"Pill", 21:"Enchant Scroll",
+       23:"Mystic Enhancement Stone", 24:"Darkened Enhancement Stone",
+       25:"Divine Dragon's Enhancement Stone", 26:"Tribute", 27:"Special Enhancement Stone",
+       28:"Oil of Blessing", 29:"Dragon Artifact Enhancement Stone", 30:"Dragon Oil of Blessing",
+       31:"Divine Dragon Artifact Stone", 32:"Black Dragon's Essence",
+       33:"Soul Orb Enchant Scroll", 34:"TE ES", 35:"Celestial Soul Pill",
+       36:"Ancient Tablet", 37:"Divine Ancient Tablet", 38:"Pledge Scroll",
+       39:"Divine Dragon's Key", 41:"White Dragon's Essence", 42:"Dragon Breath",
+       43:"Ancient Treasure Enhancement Stone", 44:"Mystic Ancient Treasure Stone",
+       45:"Darkened Ancient Treasure Stone", 46:"Divine Dragon Ancient Treasure Stone",
+       47:"Ancient Treasure Enchant Scroll", 48:"Mana Bead", 49:"Stone of Manifest Ability",
+       50:"Divine Anvil", 51:"Spirit's Powder" },
+  6: { 3:"Old / Sealed Box", 12:"ID Badge", 20:"Inner Force Pill", 21:"Fast Travel Scroll",
+       22:"Jump Scroll", 23:"General Box", 24:"Supply / Prize Box", 25:"Vigor Recharge",
+       28:"Divine Water", 30:"Water of Life", 31:"Incense Burner Box", 32:"Bag Expansion Ticket",
+       33:"Material Box", 34:"Craftsman's Benediction", 35:"Unidentified Magic Stone",
+       36:"Unidentified Spirit Treasure", 37:"Unidentified Codex Gear",
+       38:"Unidentified Mystical Piece", 39:"Gold Box", 40:"Battlegear Selection Box",
+       41:"Soul Orb Coffer", 45:"Private Warehouse", 46:"Mission Tag" },
+  7: { 1:"Upgrade Material" },
+  8: { 1:"Vigor", 2:"Mana", 3:"Focus", 4:"Force", 5:"Destruction", 6:"Awakening",
+       7:"Growth", 8:"Spectrumite", 9:"Antidemon", 10:"Precision", 11:"Agility" },
+  9: { 1:"Herb", 2:"Ore", 3:"Dragon Scale", 4:"Dragon Leather", 5:"Dragon Horn",
+       6:"Dragon Claw", 7:"Dragon Eye", 8:"Dragon Sphere", 9:"Divine Dragon's Soul" },
+  10:{ 1:"Special Material", 2:"Quest Item" },
+  11:{ 3:"Title", 7:"Pet Look", 8:"Mount Look" },
+  12:{ 1:"Skill Tome", 4:"Esoteric Tome", 5:"Skill Arcane Tome" },
+  13:{ 1:"Token", 2:"Boss Drop", 3:"Dragon Gear Drop", 5:"Ancient Arcane Tome" },
+  14:{ 1:"Collectible", 2:"Token", 3:"Septaria", 4:"Tower Ticket", 5:"Hell Raid Ticket",
+       6:"Portrait", 7:"Transformation Ticket", 8:"Scroll Box", 9:"Colored Septaria",
+       10:"Warehouse Expansion Ticket", 11:"Battle Ticket" },
+  18:{ 1:"Appearance Ticket", 2:"Summon Ticket", 3:"Armor Exchange Ticket", 5:"Blessing",
+       6:"Name Change Ticket", 7:"Travel Pass", 8:"Equipment Exchange Ticket",
+       9:"Expedition Ticket", 10:"Forsaken Badge", 11:"Exchange Ticket",
+       12:"Special Exchange Ticket", 13:"Class Creation Ticket", 14:"Mount Exchange Ticket",
+       15:"Event Pass Ticket" },
+  // Secondary Weapon: subtype = class (tingnan ang applyCustomCategories)
+  20:{ 0:"Universal", 1:"Warrior", 2:"Sorcerer", 3:"Taoist", 4:"Arbalist",
+       5:"Lancer", 6:"Darkist", 7:"Lionheart", 8:"Summoner" },
+  21:{ 1:"Mystical Piece", 2:"Advanced Mystical Piece" },
+  22:{ 1:"Majestic Scepter (Dragon)", 2:"Majestic Cape (Dragon)", 3:"Majestic Crown (Dragon)",
+       4:"Majestic Seal (Dragon)", 5:"Majestic Tome (Dragon)", 6:"Ornate Blade (Dragon)",
+       7:"Heavenly Bell (Dragon)", 8:"Incense Burner (Dragon)", 9:"Crescent Jade (Dragon)",
+       10:"Bronze Mirror (Dragon)",
+       11:"Majestic Scepter (Black)", 12:"Majestic Cape (Black)", 13:"Majestic Crown (Black)",
+       14:"Majestic Seal (Black)", 15:"Majestic Tome (Black)",
+       16:"Ornate Blade (White)", 17:"Heavenly Bell (White)", 18:"Incense Burner (White)",
+       19:"Crescent Jade (White)", 20:"Bronze Mirror (White)" },
+  23:{ 1:"Soul Orb" },
+  24:{ 1:"Sarmati's Staff", 2:"Cheonpa's Hairpin", 3:"Wu Yeogi's Gourd", 4:"Bok Yangjeo's Tome",
+       5:"Hong's Golden Needle", 6:"Noh Wunjang's Cudgel", 7:"Chogye's Pakua",
+       8:"Sondeok's Shoulder Pad", 9:"Yeoyul's Life Leech", 10:"Gaon's Fan" },
+  26:{ 1:"Ring", 2:"Necklace", 3:"Bracelet", 4:"Earrings" },
+  27:{ 1:"Quartz" },
+  28:{ 1:"Drakazan", 2:"Diabolic Skydragon", 3:"Helbar", 4:"Gu Mado" },
+  // Custom
+  101:{ 101:"Mystery Codex" },
+  102:{ 102:"Time Limited Codex" },
+  103:{ 103:"Reputation Codex" },
+  104:{ 104:"Spirit Pet" },
+  105:{ 105:"Spirit Treasure Pet" },
+  106:{ 111:"HP Restorative", 112:"MP Restorative", 113:"Potion / Tonic" }
+};
+const subLabel = (main, sub) => SUBTYPES[main]?.[sub] ?? `Subtype ${sub}`;
+
+const CLASSES = {
+  0:"Universal", 1:"Warrior", 2:"Sorcerer", 3:"Taoist", 4:"Arbalist",
+  5:"Lancer", 6:"Darkist", 7:"Lionheart", 8:"Summoner"
+};
+const LANGS = {ENG:"English",POR:"Português",SPA:"Español",TextKr:"한국어"};
+
+const RANGES = [
+  { code:101, from:"Bloodshade Nefariox Horn",         to:"Demonic Jade Marble" },
+  { code:103, from:"[UC] Bicheon Challenger's Helmet", to:"[L] Dark Sky Emperor Forsaken Ring" }
+];
+
+const SKILL_TOME_NAMES = ["Burnt Skill Tome", "Skill Arcane Tome"];
+const PREFIX_GRADE = { UC:2, R:3, E:4, L:5 };
+
+const PET_RULES = [
+  { code:104, test: i => i.SubType === 1 },
+  { code:105, test: i => i.SubType === 2 || i.SubType === 7 }
+];
+
+const POTION_SUBTYPES = { 4:111, 5:112, 6:113, 29:113 };
+// ============================================
+
+const $ = id => document.getElementById(id);
+let items = [], view = [], shown = 0, newIds = new Set();
+
+const label = (map, v) => map[v] ?? (v===undefined||v===null ? "-" : `#${v}`);
+const getName = it => {
+  const t = it.translations || {};
+  return t[$("lang").value] || t.ENG || Object.values(t)[0] || `Item ${it.ItemId}`;
+};
+
+// ===== CUSTOM CATEGORIES =====
+const ENG = it => it.translations?.ENG || "";
+
+function applyCustomCategories(list){
+  const setCat = (it, code) => { it.MainType = code; it.SubType = code; };
+
+  // Secondary Weapon: subtype base sa class (0 = Universal)
+  let sw = 0;
+  list.forEach(i=>{
+    if (i.MainType !== 20) return;
+    i.SubType = Number(i.ClassId) || 0;
+    sw++;
+  });
+  console.log(`Secondary Weapon (by class): ${sw} items`);
+
+  let p = 0;
+  list.forEach(i=>{
+    if (i.MainType !== 17) return;
+    const r = PET_RULES.find(r => r.test(i));
+    if (r) { setCat(i, r.code); p++; }
+  });
+  console.log(`Spirit Pet / Spirit Treasure Pet: ${p} items`);
+
+  let pt = 0;
+  list.forEach(i=>{
+    if (i.MainType !== 6) return;
+    const sub = POTION_SUBTYPES[i.SubType];
+    if (sub) { i.MainType = 106; i.SubType = sub; pt++; }
+  });
+  console.log(`Potions: ${pt} items`);
+
+  RANGES.forEach(r=>{
+    const start = list.findIndex(i => ENG(i) === r.from);
+    let end = -1;
+    for (let k = list.length - 1; k >= 0; k--) if (ENG(list[k]) === r.to) { end = k; break; }
+    if (start === -1 || end === -1 || end < start){
+      console.warn("Range hindi nahanap:", r, {start, end}); return;
+    }
+    for (let k = start; k <= end; k++) setCat(list[k], r.code);
+    console.log(`Category ${r.code}: ${end-start+1} items (${r.from} → ${r.to})`);
+  });
+
+  const skillRe = new RegExp(`^\\[(UC|R|E|L)\\]\\s*(${SKILL_TOME_NAMES.join("|")})$`);
+  let s = 0;
+  list.forEach(i=>{
+    const m = ENG(i).trim().match(skillRe);
+    if (!m) return;
+    i.MainType = 12;
+    i.Grade = PREFIX_GRADE[m[1]];
+    s++;
+  });
+  console.log(`Skill Tome (Burnt / Arcane): ${s} items`);
+
+  let n = 0;
+  list.forEach(i=>{
+    if (ENG(i).includes("Codex Badge")) { setCat(i, 102); n++; }
+  });
+  console.log(`Time Limited Codex: ${n} items`);
+}
+
+const FILTERS = {
+  grade: ["Grade",    GRADES,  "All Grades"],
+  type:  ["MainType", TYPES,   "All Types"],
+  class: ["ClassId",  CLASSES, "All Classes"],
+  tier:  ["Tier",     null,    "All Tiers"]
+};
+const FILTER_IDS = Object.keys(FILTERS);
+
+function fillSelect(sel, values, fmt, allLabel){
+  sel.innerHTML = `<option value="">${allLabel}</option>` +
+    values.map(v=>`<option value="${v}">${fmt(v)}</option>`).join("");
+}
+
+function buildSubtypes(){
+  const t = $("type").value;
+  const seen = new Map();
+  items.forEach(i=>{
+    if (t !== "" && i.MainType !== Number(t)) return;
+    const k = `${i.MainType}:${i.SubType}`;
+    if (!seen.has(k)) seen.set(k, [i.MainType, i.SubType]);
+  });
+  const opts = [...seen.values()].sort((a,b)=>a[0]-b[0]||a[1]-b[1]).map(([m,s])=>{
+    const l = subLabel(m,s);
+    return `<option value="${m}:${s}">${t==="" ? `${label(TYPES,m)} – ${l}` : l}</option>`;
+  });
+  $("subtype").innerHTML = `<option value="">All Subtypes</option>` + opts.join("");
+}
+
+function setupFilters(){
+  for (const [id,[field,map,allLabel]] of Object.entries(FILTERS)){
+    const vals = [...new Set(items.map(i=>i[field]).filter(v=>v!==undefined&&v!==null))]
+      .sort((a,b)=>a-b);
+    fillSelect($(id), vals, v => map ? label(map,v) : `Tier ${v}`, allLabel);
+  }
+  buildSubtypes();
+  const langs = [...new Set(items.flatMap(i=>Object.keys(i.translations||{})))];
+  langs.sort((a,b)=>(a==="ENG"?-1:b==="ENG"?1:0));
+  $("lang").innerHTML = langs.map(l=>`<option value="${l}">${LANGS[l]||l}</option>`).join("");
+  newIds = new Set([...items].sort((a,b)=>b.ItemId-a.ItemId).slice(0,NEW_COUNT).map(i=>i.ItemId));
+}
+
+function prepare(){
+  items.sort((a,b)=> a.Grade - b.Grade || a.ItemId - b.ItemId);
+  items.forEach(it=>{
+    it._s = (Object.values(it.translations||{}).join(" ") + " " +
+             it.ItemId + " " + COMMAND(it.ItemId,1)).toLowerCase();
+  });
+}
+
+// ===== FILTER + RENDER (paged) =====
+function computeView(){
+  const q = $("search").value.trim().toLowerCase();
+  const active = [];
+  for (const id of FILTER_IDS){
+    const v = $(id).value;
+    if (v !== "") active.push([FILTERS[id][0], Number(v)]);
+  }
+  const sub = $("subtype").value;
+  const [sm, ss] = sub ? sub.split(":").map(Number) : [null, null];
+
+  view = items.filter(it=>{
+    for (let k = 0; k < active.length; k++){
+      if (Number(it[active[k][0]]) !== active[k][1]) return false;
+    }
+    if (sub && (it.MainType !== sm || it.SubType !== ss)) return false;
+    if (!q) return true;
+    if (q === "new") return newIds.has(it.ItemId);
+    return it._s.includes(q);
+  });
+}
+
+function render(){
+  computeView();
+  shown = 0;
+  $("count").textContent = `${view.length} items`;
+  $("grid").innerHTML = view.length ? "" : `<div class="empty">No items found.</div>`;
+  appendMore();
+}
+
+function appendMore(){
+  if (shown >= view.length) return;
+  const end = Math.min(shown + PAGE_SIZE, view.length);
+  let html = "";
+  for (let k = shown; k < end; k++) html += card(view[k]);
+  $("grid").insertAdjacentHTML("beforeend", html);
+  shown = end;
+  io.unobserve($("more")); io.observe($("more"));
+}
+
+const io = new IntersectionObserver(es=>{
+  if (es.some(e=>e.isIntersecting)) appendMore();
+}, { rootMargin: "800px 0px" });
+io.observe($("more"));
+
+function card(it){
+  const iconSrc = it.Icon ? ICON_PATH(it.Icon) : PLACEHOLDER;
+
+  const chips = [...new Set([
+    label(GRADES, it.Grade),
+    subLabel(it.MainType, it.SubType),
+    it.Tier!=null ? `Tier ${it.Tier}` : null,
+    label(TYPES, it.MainType)
+  ].filter(Boolean))].map(c=>`<span class="chip">${c}</span>`).join("");
+
+  const stat = (l,v)=>`<div class="stat"><small>${l}</small><b>${v ?? "-"}</b></div>`;
+  return `
+  <div class="card gc-${it.Grade}" data-id="${it.ItemId}">
+    <div class="head">
+      <div class="icon"><img src="${iconSrc}" loading="lazy" decoding="async" alt=""
+           onerror="this.onerror=null;this.src=PLACEHOLDER"></div>
+      <div>
+        <div class="name">${getName(it)}</div>
+        <div class="chips">${chips}</div>
+      </div>
+    </div>
+    <div class="stats">
+      ${stat("Item ID", it.ItemId)}
+      ${stat("Icon", it.Icon)}
+      ${stat("Class", label(CLASSES, it.ClassId))}
+      ${stat("Level", it.Level)}
+      ${stat("Req. Level", it.ReqClassLevel)}
+      ${stat("Stackable", it.Stackable ? "Yes" : "No")}
+      ${stat("Sale", it.SellPrice)}
+      ${stat("Trade", it.TradeType===1 ? "Tradable" : "Untradable")}
+    </div>
+    <div class="actions">
+      <input class="qty" type="number" min="1" value="1">
+      <button class="copy">Copy command</button>
+    </div>
+  </div>`;
+}
+
+// ===== EVENTS =====
+$("grid").addEventListener("click", async e=>{
+  const btn = e.target.closest(".copy"); if(!btn) return;
+  const c = btn.closest(".card");
+  const qty = Math.max(1, parseInt(c.querySelector(".qty").value)||1);
+  try { await navigator.clipboard.writeText(COMMAND(c.dataset.id, qty)); }
+  catch(_){
+    const t = document.createElement("textarea");
+    t.value = COMMAND(c.dataset.id, qty); document.body.appendChild(t);
+    t.select(); document.execCommand("copy"); t.remove();
+  }
+  const old = btn.textContent; btn.textContent = "Copied!";
+  setTimeout(()=>btn.textContent = old, 1000);
+});
+
+const toTop = () => window.scrollTo({ top: 0, behavior: "instant" });
+
+let timer;
+$("search").addEventListener("input", ()=>{
+  clearTimeout(timer);
+  timer = setTimeout(()=>{ render(); toTop(); }, 120);
+});
+
+FILTER_IDS.forEach(id=>$(id).addEventListener("change", ()=>{
+  if (id === "type"){ $("subtype").value = ""; buildSubtypes(); }
+  render(); toTop();
+}));
+$("subtype").addEventListener("change", ()=>{ render(); toTop(); });
+
+$("lang").addEventListener("change", render);
+
+$("reset").addEventListener("click", ()=>{
+  $("search").value = "";
+  FILTER_IDS.forEach(id=>$(id).value = "");
+  $("subtype").value = ""; buildSubtypes();
+  $("lang").selectedIndex = 0;
+  render();
+  toTop();
+});
+
+fetch(ITEMS_URL).then(r=>r.json()).then(data=>{
+  items = Array.isArray(data) ? data : (data.items ?? Object.values(data));
+  applyCustomCategories(items);
+  prepare();
+  setupFilters();
+  render();
+}).catch(err=>{
+  $("grid").innerHTML = `<div class="empty">Hindi ma-load ang items.json: ${err.message}</div>`;
+});
+</script>
+</body>
+</html>
