@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MIR4 Item Database</title>
+<title>Doopa | Database</title>
+<link rel="icon" type="image/png" href="./images/cmir4.jfif">
 <style>
   :root{
     --bg:#070b16; --panel:#0c1222; --card:#0e1527; --box:#131b2e;
@@ -171,7 +172,9 @@ const TYPES = {
   26:"Ring", 27:"Quartz", 28:"Drakazan Soul Orb",
   // Custom
   101:"Mystery Codex", 102:"Time Limited Codex", 103:"Reputation Codex",
-  104:"Spirit Pet", 105:"Spirit Treasure Pet", 106:"Potion"
+  104:"Spirit Pet", 105:"Spirit Treasure Pet", 106:"Potion",
+  107:"Mount Ticket", 108:"Armor Ticket", 109:"Weapon Ticket",
+  110:"Headpiece Ticket", 111:"Backwear Ticket", 112:"Outfit Ticket"
 };
 
 // SubType ay depende sa Type:  SUBTYPES[MainType][SubType]
@@ -242,7 +245,13 @@ const SUBTYPES = {
   103:{ 103:"Reputation Codex" },
   104:{ 104:"Spirit Pet" },
   105:{ 105:"Spirit Treasure Pet" },
-  106:{ 111:"HP Restorative", 112:"MP Restorative", 113:"Potion / Tonic" }
+  106:{ 111:"HP Restorative", 112:"MP Restorative", 113:"Potion / Tonic" },
+  107:{ 107:"Mount Exchange Ticket" },
+  108:{ 108:"Armor Exchange Ticket" },
+  109:{ 109:"Weapon Exchange Ticket" },
+  110:{ 110:"Headpiece Exchange Ticket" },
+  111:{ 111:"Backwear Exchange Ticket" },
+  112:{ 112:"Outfit Exchange Ticket" }
 };
 const subLabel = (main, sub) => SUBTYPES[main]?.[sub] ?? `Subtype ${sub}`;
 
@@ -266,6 +275,29 @@ const PET_RULES = [
 ];
 
 const POTION_SUBTYPES = { 4:111, 5:112, 6:113, 29:113 };
+
+// ===== TICKET CATEGORIES (base sa pangalan ng item, kailangan "Exchange Ticket") =====
+// Dagdagan ang MOUNT_WORDS kung may ibang mount na hindi pa nahuhuli
+// (hal. "Tiger", "Wolf", "Phoenix").
+const MOUNT_WORDS = ["Horse", "Mount"];
+
+// Mahalaga ang ayos: una ang nahuhuli. Ang Mount ay nasa huli para hindi
+// mahuli ang mga pangalang may "Horse" pero outfit (hal. "Horse Juju Doll Suit").
+const TICKET_RULES = [
+  { code:111, re: /\b(Backpack|Backwear|Back\s*Wear|Wings?)\b.*\bExchange Ticket\b/i },
+  { code:110, re: /\bHeadpiece\b.*\bExchange Ticket\b/i },
+  { code:109, re: /\bWeapon\b.*\bExchange Ticket\b/i },
+  { code:108, re: /\bArmor\b.*\bExchange Ticket\b/i },
+  { code:112, re: /\b(Outfit|Suit|Doll)\b.*\bExchange Ticket\b/i },   // ibang outfit
+  { code:107, re: new RegExp(`\\b(${MOUNT_WORDS.join("|")})\\s+Exchange Ticket\\b`, "i") }
+];
+const TICKET_CODES = new Set(TICKET_RULES.map(r => r.code));
+
+// Tier ng ticket base sa pangalan ng set. Dagdagan kapag alam mo na ang tamang Tier.
+// Halimbawa:  "Ruler": 5,  "Starlit Void": 4
+const TICKET_TIERS = {
+  // "Ruler": 5,
+};
 // ============================================
 
 const $ = id => document.getElementById(id);
@@ -335,6 +367,27 @@ function applyCustomCategories(list){
     if (ENG(i).includes("Codex Badge")) { setCat(i, 102); n++; }
   });
   console.log(`Time Limited Codex: ${n} items`);
+
+  // Armor / Weapon / Headpiece / Backwear / Mount / Outfit Ticket
+  const counts = {};
+  list.forEach(i=>{
+    const name = ENG(i);
+    const rule = TICKET_RULES.find(r => r.re.test(name));
+    if (!rule) return;
+
+    setCat(i, rule.code);
+    counts[TYPES[rule.code]] = (counts[TYPES[rule.code]] || 0) + 1;
+
+    const key = Object.keys(TICKET_TIERS).find(k => name.includes(k));
+    if (key) i.Tier = TICKET_TIERS[key];
+  });
+  console.log("Tickets:", counts);
+
+  // Tulong sa pag-debug: mga "Ticket" na hindi pa naka-category
+  const leftover = list.filter(i=>
+    /Exchange Ticket/i.test(ENG(i)) && !TICKET_CODES.has(i.MainType)
+  ).map(i=>`${i.ItemId} ${ENG(i)}`);
+  if (leftover.length) console.log("Exchange Ticket na wala pang category:", leftover);
 }
 
 const FILTERS = {
