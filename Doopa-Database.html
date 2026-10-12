@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Doopa | Database</title>
-<link rel="icon" type="image/png" href="./images/cmir4.jfif">
+<title>MIR4 Item Database</title>
 <style>
   :root{
     --bg:#070b16; --panel:#0c1222; --card:#0e1527; --box:#131b2e;
@@ -168,13 +167,14 @@ const TYPES = {
   7:"Upgrade Material", 8:"Magic Stone", 9:"Herb", 10:"Special Material",
   11:"Wearable", 12:"Skill Tome", 13:"Monster Drop", 14:"Collectible",
   18:"Summon Ticket", 20:"Secondary Weapon",
-  21:"Mystical Piece", 22:"Majestic Gear", 23:"Soul Orb", 24:"Relic",
-  26:"Ring", 27:"Quartz", 28:"Drakazan Soul Orb",
+  21:"Mystical Piece", 22:"Dragon Artifacts", 23:"Soul Orb", 24:"TE Gears",
+  26:"Ancient Treasures", 27:"Quartz", 28:"Drakazan Soul Orb",
   // Custom
   101:"Mystery Codex", 102:"Time Limited Codex", 103:"Reputation Codex",
   104:"Spirit Pet", 105:"Spirit Treasure Pet", 106:"Potion",
   107:"Mount Ticket", 108:"Armor Ticket", 109:"Weapon Ticket",
-  110:"Headpiece Ticket", 111:"Backwear Ticket", 112:"Outfit Ticket"
+  110:"Headpiece Ticket", 111:"Backwear Ticket", 112:"Outfit Ticket",
+  113:"Crafting Material", 114:"Inner Force"
 };
 
 // SubType ay depende sa Type:  SUBTYPES[MainType][SubType]
@@ -235,8 +235,9 @@ const SUBTYPES = {
   23:{ 1:"Soul Orb" },
   24:{ 1:"Sarmati's Staff", 2:"Cheonpa's Hairpin", 3:"Wu Yeogi's Gourd", 4:"Bok Yangjeo's Tome",
        5:"Hong's Golden Needle", 6:"Noh Wunjang's Cudgel", 7:"Chogye's Pakua",
-       8:"Sondeok's Shoulder Pad", 9:"Yeoyul's Life Leech", 10:"Gaon's Fan" },
-  26:{ 1:"Ring", 2:"Necklace", 3:"Bracelet", 4:"Earrings" },
+       8:"Sondeok's Shoulder Pad", 9:"Yeoyul's Life Leech", 10:"Gaon's Fan",
+       11:"TE ES" },
+  26:{ 1:"Ragnos", 2:"Necklace", 3:"Bracelet", 4:"Earrings" },
   27:{ 1:"Quartz" },
   28:{ 1:"Drakazan", 2:"Diabolic Skydragon", 3:"Helbar", 4:"Gu Mado" },
   // Custom
@@ -251,7 +252,10 @@ const SUBTYPES = {
   109:{ 109:"Weapon Exchange Ticket" },
   110:{ 110:"Headpiece Exchange Ticket" },
   111:{ 111:"Backwear Exchange Ticket" },
-  112:{ 112:"Outfit Exchange Ticket" }
+  112:{ 112:"Outfit Exchange Ticket" },
+  113:{ 3:"Dragon Scale", 4:"Dragon Leather", 5:"Dragon Horn", 6:"Dragon Claw", 7:"Dragon Eye", 8:"Dragon Sphere" },
+  114:{ 1:"Toad Stance", 2:"Northern Profound Art", 3:"Violet Mist Art",
+        4:"Nine Yang Manual", 5:"Nine Yin Manual", 6:"Muscle Strength Manual" }
 };
 const subLabel = (main, sub) => SUBTYPES[main]?.[sub] ?? `Subtype ${sub}`;
 
@@ -293,6 +297,23 @@ const TICKET_RULES = [
 ];
 const TICKET_CODES = new Set(TICKET_RULES.map(r => r.code));
 
+// ===== DEFAULT QUANTITY =====
+// Items na 99999 ang default quantity. Dagdagan lang ang list o regex dito.
+const BULK_QTY = 99999;
+// Type codes (MainType) na 99999 ang default:
+// 5 Material, 6 Box, 7 Upgrade Material, 9 Herb, 10 Special Material, 13 Monster Drop,
+// 14 Collectible, 23 Soul Orb, 102 Time Limited, 103 Reputation, 104 Spirit Pet, 106 Potion
+const BULK_TYPES = new Set([5,6,7,9,10,12,13,14,23,113,102,103,104,106,113,114]);
+const BULK_NAMES = ["Lesser Yin Pill"];          // exact names (case-insensitive)
+const BULK_REGEX = [ /\bPill\b/i, /\bTE ES\b/i ];              // lahat ng may "Pill" sa pangalan
+const defaultQty = it => {
+  const n = (getName(it) || "").trim();
+  const hit = BULK_TYPES.has(Number(it.MainType))
+           || BULK_NAMES.some(x => x.toLowerCase() === n.toLowerCase())
+           || BULK_REGEX.some(r => r.test(n));
+  return hit ? BULK_QTY : 1;
+};
+
 // Tier ng ticket base sa pangalan ng set. Dagdagan kapag alam mo na ang tamang Tier.
 // Halimbawa:  "Ruler": 5,  "Starlit Void": 4
 const TICKET_TIERS = {
@@ -331,6 +352,35 @@ function applyCustomCategories(list){
     if (r) { setCat(i, r.code); p++; }
   });
   console.log(`Spirit Pet / Spirit Treasure Pet: ${p} items`);
+
+  // Dragon Materials: Herb type, subtype 3-8 (Scale/Leather/Horn/Claw/Eye/Sphere). Boxes (type 6) hindi apektado.
+  let dm = 0;
+  list.forEach(i=>{
+    if (i.MainType !== 9 || i.SubType < 3 || i.SubType > 8) return;
+    i.MainType = 113; dm++;
+  });
+  console.log(`Dragon Materials: ${dm} items`);
+
+  // Inner Force manuals (by name)
+  const IF_ARTS = ["Toad Stance","Northern Profound Art","Violet Mist Art","Nine Yang Manual","Nine Yin Manual","Muscle Strength Manual"];
+  const ifRe = new RegExp(`^(?:\\[[^\\]]*\\]\\s*)?(${IF_ARTS.join("|")})\\s+(?:Volume|Vol\\.?)\\s*[12]$`, "i");
+  let inf = 0;
+  list.forEach(i=>{
+    const m = ENG(i).trim().match(ifRe);
+    if (!m) return;
+    const k = IF_ARTS.findIndex(a => a.toLowerCase() === m[1].toLowerCase()) + 1;
+    i.MainType = 114; i.SubType = k; inf++;
+  });
+  console.log(`Inner Force: ${inf} items`);
+
+  // TE ES (hal. "[L] TE ES") -> TE Gears / TE ES
+  let te = 0;
+  list.forEach(i=>{
+    if (/\bTE ES\b/i.test(ENG(i)) || (i.MainType === 5 && i.SubType === 34)){
+      i.MainType = 24; i.SubType = 11; te++;
+    }
+  });
+  console.log(`TE ES -> TE Gears: ${te} items`);
 
   let pt = 0;
   list.forEach(i=>{
@@ -516,7 +566,7 @@ function card(it){
       ${stat("Trade", it.TradeType===1 ? "Tradable" : "Untradable")}
     </div>
     <div class="actions">
-      <input class="qty" type="number" min="1" value="1">
+      <input class="qty" type="number" min="1" value="${defaultQty(it)}">
       <button class="copy">Copy command</button>
     </div>
   </div>`;
